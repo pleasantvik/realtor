@@ -12,6 +12,10 @@ export const login = Yup.object({
 });
 
 export const signup = Yup.object({
+  username: Yup.string()
+    .trim()
+    .required("The username field is required")
+    .min(5, "Username should be minimum of 5 character"),
   email: Yup.string()
     .trim()
     .required("The email field is required")

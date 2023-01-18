@@ -49,6 +49,7 @@ export const Signin = () => {
                 className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
                 {...formik.getFieldProps("email")}
                 placeholder="Email address"
+                autoComplete="off"
               />
               {formik.touched.email && formik.errors.email && (
                 <div className="text-red-500">{formik.errors.email}</div>
@@ -70,7 +71,9 @@ export const Signin = () => {
                 placeholder="Password"
               />
               {formik.touched.password && formik.errors.password && (
-                <div className="text-red-500">{formik.errors.password}</div>
+                <div className="text-red-500 absolute">
+                  {formik.errors.password}
+                </div>
               )}
               {!showPassword && (
                 <AiFillEyeInvisible
