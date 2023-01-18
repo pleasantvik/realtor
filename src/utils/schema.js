@@ -29,3 +29,10 @@ export const signup = Yup.object({
     .oneOf([Yup.ref("password"), null], "Password does not match")
     .required("The password field cannot be empty"),
 });
+
+export const forgotPassword = Yup.object({
+  email: Yup.string()
+    .trim()
+    .required("The email field is required")
+    .email("The  email is invalid"),
+});
