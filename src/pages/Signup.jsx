@@ -69,7 +69,7 @@ export const Signup = () => {
 
       await setDoc(doc(db, "users", user.uid), formDataCopy);
       navigate("/");
-      ShowToast("SUCCESS", "User account created successfully");
+      ShowToast("SUCCESS", `Welcome on board ${user.displayName}`);
     } catch (error) {
       console.log(error.message);
       ShowToast("ERROR", error.message);
