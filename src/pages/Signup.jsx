@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { signup } from "utils/schema";
 
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 import loginImg from "resources/images/lock.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Oauth } from "components/Oauth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { ShowToast } from "utils/tools";
 
 export const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+  const navigate = useNavigate();
 
   const handlePasswordShow = () => {
     setShowPassword(!showPassword);
@@ -18,6 +28,7 @@ export const Signup = () => {
   const handlePasswordShowConfirm = () => {
     setShowPasswordConfirm(!showPasswordConfirm);
   };
+
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -28,8 +39,42 @@ export const Signup = () => {
     validationSchema: signup,
     onSubmit: (values) => {
       console.log(values);
+      onSubmitForm(values);
     },
   });
+
+  const onSubmitForm = async (values) => {
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+
+      updateProfile(auth.currentUser, {
+        displayName: values.username,
+      });
+      const user = userCredential.user;
+      console.log(user);
+
+      const formDataCopy = { ...values };
+      // console.log(formDataCopy, "FormData");
+
+      delete formDataCopy.confirmPassword;
+      delete formDataCopy.password;
+      // console.log(formDataCopy, "FormData");
+
+      formDataCopy.timeStamp = serverTimestamp();
+
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      navigate("/");
+      ShowToast("SUCCESS", "User account created successfully");
+    } catch (error) {
+      console.log(error.message);
+      ShowToast("ERROR", error.message);
+    }
+  };
 
   return (
     <section className="bg-gray-200">
