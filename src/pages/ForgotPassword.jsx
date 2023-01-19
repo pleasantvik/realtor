@@ -4,6 +4,8 @@ import { forgotPassword } from "utils/schema";
 import loginImg from "resources/images/lock.jpg";
 import { Link } from "react-router-dom";
 import { Oauth } from "components/Oauth";
+import { ShowToast } from "utils/tools";
+import { getAuth, sendPasswordResetEmail } from "@firebase/auth";
 
 export const ForgotPassword = () => {
   const formik = useFormik({
@@ -12,9 +14,21 @@ export const ForgotPassword = () => {
     },
     validationSchema: forgotPassword,
     onSubmit: (values) => {
-      console.log(values);
+      onSubmitForm(values);
     },
   });
+
+  const onSubmitForm = async (values) => {
+    try {
+      const auth = getAuth();
+
+      await sendPasswordResetEmail(auth, values.email);
+
+      ShowToast("SUCCESS", "Email sent successfully");
+    } catch (error) {
+      ShowToast("Error", error.message);
+    }
+  };
 
   return (
     <section className="bg-gray-200">
@@ -59,7 +73,7 @@ export const ForgotPassword = () => {
               </p>
               <p>
                 <Link
-                  to="/sign-in"
+                  to="/login"
                   className="text-[#c69963] hover:text-[#b28451] transition duration-200 ease-in-out font-bold"
                 >
                   Sign in
