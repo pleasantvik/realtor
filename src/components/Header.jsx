@@ -1,8 +1,21 @@
-import React from "react";
+import { getAuth, onAuthStateChanged } from "@firebase/auth";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import logo from "resources/images/logo.png";
 
 export const Header = () => {
+  const auth = getAuth();
+  const [pageState, setPageState] = useState("Login");
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setPageState("Profile");
+      } else {
+        setPageState("Sign in");
+      }
+    });
+  }, [auth]);
   return (
     <div className="bg-[#101d2c] border-b shadow-sm sticky top-0 z-50">
       <header className=" p-4 flex justify-between items-center max-w-6xl mx-auto">
@@ -36,12 +49,12 @@ export const Header = () => {
             </li>
             <li>
               <NavLink
-                to="/login"
+                to={auth.currentUser ? "/profile" : "/login"}
                 className={(navData) =>
                   navData.isActive ? "border-b-[3px] text-[#f9f7f6]" : ""
                 }
               >
-                Login
+                {pageState}
               </NavLink>
             </li>
           </ul>
