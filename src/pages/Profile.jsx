@@ -2,10 +2,11 @@ import { getAuth, updateProfile } from "@firebase/auth";
 import { doc, updateDoc } from "@firebase/firestore";
 import { db } from "../firebase";
 import { useFormik } from "formik";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { updateProfile as updateProfileSchema } from "utils/schema";
 import { ShowToast } from "utils/tools";
+import { DashboardLayout } from "components/DashboardLayout";
 
 export const Profile = () => {
   const [editProfile, setEditProfile] = useState(false);
@@ -54,9 +55,9 @@ export const Profile = () => {
   };
 
   return (
-    <Fragment>
-      <section className="flex flex-col justify-center items-center max-w-6xl mx-auto">
-        <h1 className="text-3xl text-center mt-6 font-bold uppercase">
+    <DashboardLayout>
+      <section className="flex flex-col justify-center items-center w-full">
+        <h1 className="text-3xl text-center  font-bold uppercase">
           <span className="text-[#c69963] italic ">
             {`${auth.currentUser.displayName}'s`}
           </span>{" "}
@@ -128,6 +129,6 @@ export const Profile = () => {
           </form>
         </div>
       </section>
-    </Fragment>
+    </DashboardLayout>
   );
 };
