@@ -9,9 +9,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Oauth } from "components/Oauth";
 import { ShowToast } from "utils/tools";
 import { getAuth, signInWithEmailAndPassword } from "@firebase/auth";
+import { ReactComponent as Roller } from "resources/svg/rolling.svg";
 
 export const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handlePasswordShow = () => {
@@ -25,6 +27,8 @@ export const Signin = () => {
     validationSchema: login,
     onSubmit: (values) => {
       console.log(values);
+      setLoading(true);
+
       onSubmitForm(values);
     },
   });
@@ -43,6 +47,7 @@ export const Signin = () => {
         ShowToast("SUCCESS", `Welcome on board ${user.displayName}`);
       }
     } catch (error) {
+      setLoading(false);
       ShowToast("ERROR", error.message);
     }
   };
@@ -134,7 +139,8 @@ export const Signin = () => {
               type="submit"
               className="w-full bg-[#101d2c] text-[#f9f7f6] px-7 py-3 text-sm font-medium uppercase rounded shadow-md hover:bg-[#162331] transition duration-200 ease-in-out hover:shadow-lg"
             >
-              Sign in
+              {loading && <Roller />}
+              {!loading && "Sign in"}
             </button>
             <div className="my-4 before:border-t flex before:flex-1 items-center before:border-[#aaa] after:border-t after:flex-1  after:border-[#aaa]">
               <p className="text-center font-semibold mx-4">OR</p>
