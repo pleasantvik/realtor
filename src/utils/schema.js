@@ -39,4 +39,8 @@ export const forgotPassword = Yup.object({
 
 export const updateProfile = Yup.object({
   username: Yup.string().trim().required("The email field is required"),
+  email: Yup.string()
+    .trim()
+    .required("The email field is required")
+    .email("The  email is invalid"),
 });
