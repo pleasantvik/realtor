@@ -5,11 +5,14 @@ import { login } from "utils/schema";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 import loginImg from "resources/images/lock.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Oauth } from "components/Oauth";
+import { ShowToast } from "utils/tools";
+import { getAuth, signInWithEmailAndPassword } from "@firebase/auth";
 
 export const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handlePasswordShow = () => {
     setShowPassword(!showPassword);
@@ -22,9 +25,27 @@ export const Signin = () => {
     validationSchema: login,
     onSubmit: (values) => {
       console.log(values);
+      onSubmitForm(values);
     },
   });
 
+  const onSubmitForm = async (values) => {
+    try {
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      const user = userCredential.user;
+      if (user) {
+        navigate("/");
+        ShowToast("SUCCESS", `Welcome on board ${user.displayName}`);
+      }
+    } catch (error) {
+      ShowToast("ERROR", error.message);
+    }
+  };
   return (
     <section className="bg-gray-200">
       <h1 className="text-3xl text-center pt-6 font-bold">Sign in</h1>
