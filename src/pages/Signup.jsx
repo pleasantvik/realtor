@@ -15,10 +15,12 @@ import { Oauth } from "components/Oauth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { ShowToast } from "utils/tools";
+import { ReactComponent as Roller } from "resources/svg/rolling.svg";
 
 export const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,6 +41,7 @@ export const Signup = () => {
     validationSchema: signup,
     onSubmit: (values) => {
       console.log(values);
+      setLoading(true);
       onSubmitForm(values);
     },
   });
@@ -72,6 +75,7 @@ export const Signup = () => {
       ShowToast("SUCCESS", `Welcome on board ${user.displayName}`);
     } catch (error) {
       console.log(error.message);
+      setLoading(false);
       ShowToast("ERROR", error.message);
     }
   };
@@ -214,7 +218,8 @@ export const Signup = () => {
               type="submit"
               className="w-full bg-[#101d2c] text-[#f9f7f6] px-7 py-3 text-sm font-medium uppercase rounded shadow-md hover:bg-[#162331] transition duration-200 ease-in-out hover:shadow-lg"
             >
-              Sign up
+              {loading && <Roller />}
+              {!loading && "Sign up"}
             </button>
             <div className="my-4 before:border-t flex before:flex-1 items-center before:border-[#aaa] after:border-t after:flex-1  after:border-[#aaa]">
               <p className="text-center font-semibold mx-4">OR</p>

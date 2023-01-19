@@ -6,8 +6,11 @@ import { Link } from "react-router-dom";
 import { Oauth } from "components/Oauth";
 import { ShowToast } from "utils/tools";
 import { getAuth, sendPasswordResetEmail } from "@firebase/auth";
+import { useState } from "react";
+import { ReactComponent as Roller } from "resources/svg/rolling.svg";
 
 export const ForgotPassword = () => {
+  const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -15,6 +18,7 @@ export const ForgotPassword = () => {
     validationSchema: forgotPassword,
     onSubmit: (values) => {
       onSubmitForm(values);
+      setLoading(true);
     },
   });
 
@@ -26,7 +30,10 @@ export const ForgotPassword = () => {
 
       ShowToast("SUCCESS", "Email sent successfully");
     } catch (error) {
+      setLoading(false);
       ShowToast("ERROR", error.message);
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -84,7 +91,8 @@ export const ForgotPassword = () => {
               type="submit"
               className="w-full bg-[#101d2c] text-[#f9f7f6] px-7 py-3 text-sm font-medium uppercase rounded shadow-md hover:bg-[#162331] transition duration-200 ease-in-out hover:shadow-lg"
             >
-              Send Password Reset Email
+              {!loading && " Send Password Reset Email"}
+              {loading && <Roller />}
             </button>
             <div className="my-4 before:border-t flex before:flex-1 items-center before:border-[#aaa] after:border-t after:flex-1  after:border-[#aaa]">
               <p className="text-center font-semibold mx-4">OR</p>
