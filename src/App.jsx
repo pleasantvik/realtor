@@ -9,6 +9,7 @@ import { Signin } from "./pages/Signin";
 import { Signup } from "./pages/Signup";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { PrivateRoute } from "components/PrivateRoute";
 
 export const App = () => {
   return (
@@ -16,7 +17,9 @@ export const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<PrivateRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
         <Route path="/login" element={<Signin />} />
         <Route path="/sign-up" element={<Signup />} />
         <Route path="/offers" element={<Offers />} />
@@ -32,7 +35,7 @@ export const App = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
+        theme="dark"
       />
     </Fragment>
   );
