@@ -1,11 +1,12 @@
 import { useAuthStatus } from "hooks/useAuthStatus";
 import React, { Fragment } from "react";
 import { Navigate, Outlet } from "react-router";
+import { Spinner } from "./Spinner";
 
 export const PrivateRoute = () => {
   const { loggedIn, checkingStatus } = useAuthStatus();
   if (checkingStatus) {
-    return <h3>Loading....</h3>;
+    return <Spinner />;
   }
   return (
     <Fragment>
