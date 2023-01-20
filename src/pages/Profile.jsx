@@ -8,6 +8,9 @@ import { updateProfile as updateProfileSchema } from "utils/schema";
 import { ShowToast } from "utils/tools";
 import { DashboardLayout } from "components/DashboardLayout";
 
+import { FaHome } from "react-icons/fa";
+import { Link } from "react-router-dom";
+
 export const Profile = () => {
   const [editProfile, setEditProfile] = useState(false);
   const navigate = useNavigate();
@@ -127,6 +130,18 @@ export const Profile = () => {
               </p>
             </div>
           </form>
+          <button
+            type="submit"
+            className="w-full bg-[#101d2c] px-7 py-3 text-sm rounded font-medium uppercase text-[#f6f7f9] shadow-md hover:bg-[#162331] transition duration-200 ease-in-out hover:shadow-xl"
+          >
+            <Link
+              to="/create-listing"
+              className="flex items-center justify-center "
+            >
+              <FaHome className="mr-2 text-3xl bg-[#c69963] p-1 rounded-full border-2" />
+              Sell or rent your home
+            </Link>
+          </button>
         </div>
       </section>
     </DashboardLayout>

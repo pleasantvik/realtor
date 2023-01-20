@@ -14,7 +14,7 @@ export const DashboardLayout = (props) => {
     },
     {
       text: "Create",
-      linkTo: "/create",
+      linkTo: "/create-listing",
     },
   ];
   return (
