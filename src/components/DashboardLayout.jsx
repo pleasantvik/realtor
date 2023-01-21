@@ -12,6 +12,10 @@ export const DashboardLayout = (props) => {
       text: "Listing",
       linkTo: "/listing",
     },
+    // {
+    //   text: "Create",
+    //   linkTo: "/create-listing",
+    // },
     {
       text: "Create",
       linkTo: "/create-listing",

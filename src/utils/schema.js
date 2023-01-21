@@ -46,6 +46,14 @@ export const updateProfile = Yup.object({
 });
 export const createList = Yup.object({
   type: Yup.string(),
+  longitude: Yup.number()
+    .required("Please input your longitude")
+    .min(-180, "Longitude cannot be smaller than -180")
+    .max(180, "Longitude max value is 180"),
+  latitude: Yup.number()
+    .required("Please input your latitude")
+    .min(-90, "Latitude cannot be smaller than -90")
+    .max(90, "Latitude max value is 90"),
   offer: Yup.string(),
   parks: Yup.string(),
   furnished: Yup.string(),
