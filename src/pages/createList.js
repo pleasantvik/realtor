@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Spinner } from "../components/Spinner";
-import { toast } from "react-toastify";
 import {
   getStorage,
   ref,
@@ -13,11 +12,12 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "components/DashboardLayout";
+import { ShowToast } from "utils/tools";
 
-export function CreateListing() {
+export function Create() {
   const navigate = useNavigate();
   const auth = getAuth();
-  const [geolocationEnabled, setGeolocationEnabled] = useState(true);
+  const [geolocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: "rent",
@@ -53,20 +53,21 @@ export function CreateListing() {
   } = formData;
   function onChange(e) {
     let boolean = null;
+    //Case onChange is handling boolean value
     if (e.target.value === "true") {
       boolean = true;
     }
     if (e.target.value === "false") {
       boolean = false;
     }
-    // Files
+    // Files- when uploading images
     if (e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
         images: e.target.files,
       }));
     }
-    // Text/Boolean/Number
+    // Text/Boolean/Number (When we are dealing with other value aside image)
     if (!e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
@@ -79,12 +80,15 @@ export function CreateListing() {
     setLoading(true);
     if (+discountedPrice >= +regularPrice) {
       setLoading(false);
-      toast.error("Discounted price needs to be less than regular price");
+      ShowToast(
+        "ERROR",
+        "Discounted price needs to be less than regular price"
+      );
       return;
     }
     if (images.length > 6) {
       setLoading(false);
-      toast.error("maximum 6 images are allowed");
+      ShowToast("ERROR", "maximum 6 images are allowed");
       return;
     }
     let geolocation = {};
@@ -102,7 +106,7 @@ export function CreateListing() {
 
       if (location === undefined) {
         setLoading(false);
-        toast.error("please enter a correct address");
+        ShowToast("ERROR", "please enter a correct address");
         return;
       }
     } else {
@@ -113,7 +117,9 @@ export function CreateListing() {
     async function storeImage(image) {
       return new Promise((resolve, reject) => {
         const storage = getStorage();
-        const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+        //Create unique filename with the userId,imagename and uuid
+        const filename = `${auth?.currentUser?.uid}-${image.name}-${uuidv4()}`;
+        //Storage reference
         const storageRef = ref(storage, filename);
         const uploadTask = uploadBytesResumable(storageRef, image);
         uploadTask.on(
@@ -152,10 +158,10 @@ export function CreateListing() {
     }
 
     const imgUrls = await Promise.all(
-      [...images].map((image) => storeImage(image))
+      [...images]?.map((image) => storeImage(image))
     ).catch((error) => {
       setLoading(false);
-      toast.error("Images not uploaded");
+      ShowToast("ERROR", "Images not uploaded");
       return;
     });
 
@@ -172,7 +178,7 @@ export function CreateListing() {
     delete formDataCopy.longitude;
     const docRef = await addDoc(collection(db, "listings"), formDataCopy);
     setLoading(false);
-    toast.success("Listing created");
+    ShowToast("SUCCESS", "Listing created");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   }
 
@@ -186,9 +192,7 @@ export function CreateListing() {
           Create a Listing
         </h1>
         <form onSubmit={onSubmit}>
-          <p className="text-lg text-[#c69963] mt-6 font-semibold">
-            Sell / Rent
-          </p>
+          <p className="text-lg text-black mt-6 font-semibold">Sell / Rent</p>
           <div className="flex">
             <button
               type="button"
@@ -217,7 +221,7 @@ export function CreateListing() {
               rent
             </button>
           </div>
-          <p className="text-lg text-[#c69963] mt-6 font-semibold">Name</p>
+          <p className="text-lg text-black mt-6 font-semibold">Name</p>
           <input
             type="text"
             id="name"
@@ -244,7 +248,7 @@ export function CreateListing() {
               />
             </div>
             <div>
-              <p className="text-lg text-[#c69963] font-semibold">Baths</p>
+              <p className="text-lg text-black font-semibold">Baths</p>
               <input
                 type="number"
                 id="bathrooms"
@@ -257,9 +261,7 @@ export function CreateListing() {
               />
             </div>
           </div>
-          <p className="text-lg text-[#c69963] mt-6 font-semibold">
-            Parking spot
-          </p>
+          <p className="text-lg text-black mt-6 font-semibold">Parking spot</p>
           <div className="flex">
             <button
               type="button"
@@ -267,7 +269,7 @@ export function CreateListing() {
               value={true}
               onClick={onChange}
               className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-                !parking ? "bg-white text-black" : "bg-slate-600 text-white"
+                !parking ? "bg-white text-[#101d2c]" : "bg-[#101d2c] text-white"
               }`}
             >
               Yes
@@ -278,7 +280,7 @@ export function CreateListing() {
               value={false}
               onClick={onChange}
               className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-                parking ? "bg-white text-black" : "bg-slate-600 text-white"
+                parking ? "bg-white text-[#101d2c]" : "bg-[#101d2c] text-white"
               }`}
             >
               no
@@ -292,7 +294,9 @@ export function CreateListing() {
               value={true}
               onClick={onChange}
               className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-                !furnished ? "bg-white text-black" : "bg-slate-600 text-white"
+                !furnished
+                  ? "bg-white text-[#101d2c]"
+                  : "bg-[#101d2c] text-white"
               }`}
             >
               yes
@@ -303,13 +307,15 @@ export function CreateListing() {
               value={false}
               onClick={onChange}
               className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-                furnished ? "bg-white text-black" : "bg-slate-600 text-white"
+                furnished
+                  ? "bg-white text-[#101d2c]"
+                  : "bg-[#101d2c] text-white"
               }`}
             >
               no
             </button>
           </div>
-          <p className="text-lg text-[#c69963] mt-6 font-semibold">Address</p>
+          <p className="text-lg text-black mt-6 font-semibold">Address</p>
           <textarea
             type="text"
             id="address"
@@ -322,7 +328,7 @@ export function CreateListing() {
           {!geolocationEnabled && (
             <div className="flex space-x-6 justify-start mb-6">
               <div className="">
-                <p className="text-lg text-[#c69963] font-semibold">Latitude</p>
+                <p className="text-lg text-black font-semibold">Latitude</p>
                 <input
                   type="number"
                   id="latitude"
@@ -335,9 +341,7 @@ export function CreateListing() {
                 />
               </div>
               <div className="">
-                <p className="text-lg text-[#c69963] font-semibold">
-                  Longitude
-                </p>
+                <p className="text-lg text-black font-semibold">Longitude</p>
                 <input
                   type="number"
                   id="longitude"
@@ -351,7 +355,7 @@ export function CreateListing() {
               </div>
             </div>
           )}
-          <p className="text-lg text-[#c69963] font-semibold">Description</p>
+          <p className="text-lg text-black font-semibold">Description</p>
           <textarea
             type="text"
             id="description"
@@ -369,7 +373,7 @@ export function CreateListing() {
               value={true}
               onClick={onChange}
               className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-                !offer ? "bg-white text-black" : "bg-slate-600 text-white"
+                !offer ? "bg-white text-[#101d2c]" : "bg-[#101d2c] text-white"
               }`}
             >
               yes
@@ -380,17 +384,15 @@ export function CreateListing() {
               value={false}
               onClick={onChange}
               className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-                offer ? "bg-white text-black" : "bg-slate-600 text-white"
+                offer ? "bg-white text-[#101d2c]" : "bg-[#101d2c] text-white"
               }`}
             >
               no
             </button>
           </div>
-          <div className="flex text-[#c69963] items-center mb-6">
+          <div className="flex text-black items-center mb-6">
             <div className="">
-              <p className="text-lg text-[#c69963] font-semibold">
-                Regular price
-              </p>
+              <p className="text-lg text-black font-semibold">Regular price</p>
               <div className="flex w-full justify-center items-center space-x-6">
                 <input
                   type="number"
@@ -413,7 +415,7 @@ export function CreateListing() {
             </div>
           </div>
           {offer && (
-            <div className="flex text-[#c69963] items-center mb-6">
+            <div className="flex text-black items-center mb-6">
               <div className="">
                 <p className="text-lg font-semibold">Discounted price</p>
                 <div className="flex w-full justify-center items-center space-x-6">
@@ -439,7 +441,7 @@ export function CreateListing() {
             </div>
           )}
           <div className="mb-6">
-            <p className="text-lg font-semibold text-[#c69963]">Images</p>
+            <p className="text-lg font-semibold text-black">Images</p>
             <p className="text-gray-600">
               The first image will be the cover (max 6)
             </p>
