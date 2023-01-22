@@ -68,7 +68,7 @@ export const Signup = () => {
       delete formDataCopy.password;
       // console.log(formDataCopy, "FormData");
 
-      formDataCopy.timeStamp = serverTimestamp();
+      formDataCopy.timestamp = serverTimestamp();
 
       await setDoc(doc(db, "users", user.uid), formDataCopy);
       navigate("/");

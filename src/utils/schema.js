@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+// const FILE_SIZE = 2050000;
 
 export const login = Yup.object({
   email: Yup.string()
@@ -79,4 +80,18 @@ export const createList = Yup.object({
     .required("discount price is required")
     .min(1, "discount price cannot be lesser than 1")
     .max(Yup.ref("price"), "Cannot exceed price"),
+  // images: Yup.array().max(2, "Images cannot be more than 6"),
+  // images: Yup.mixed()
+  //   .required("*Avatar image is required")
+  //   .max(2, "To much")
+  //   .test(
+  //     "fileSize",
+  //     "Image too large, max 8mb",
+  //     (value) => value && value.size <= FILE_SIZE
+  //   )
+  //   .test(
+  //     "fileFormat",
+  //     "Images only"
+  //     // (value) => value && FILE_TYPES.includes(value.type)
+  //   ),
 });
