@@ -13,13 +13,24 @@ import SwiperCore, {
 } from "swiper";
 
 import "swiper/css/bundle";
-import { FaShare } from "react-icons/fa";
+import {
+  FaBath,
+  FaBed,
+  FaChair,
+  FaMapMarkerAlt,
+  FaParking,
+  FaShare,
+} from "react-icons/fa";
+import { getAuth } from "firebase/auth";
+import { ContactOwner } from "components/ContactOwner";
 
 export const ListingDetail = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
+  const [contactOwner, setContactOwner] = useState(false);
   const { type, listingId } = useParams();
+  const auth = getAuth();
   console.log(type, listingId);
 
   SwiperCore.use([Autoplay, Navigation, Pagination]);
@@ -33,6 +44,10 @@ export const ListingDetail = () => {
       setShareLinkCopied(false);
       console.log("copied");
     }, 2000);
+  };
+
+  const handleContactOwner = () => {
+    setContactOwner(true);
   };
 
   useEffect(() => {
@@ -85,6 +100,76 @@ export const ListingDetail = () => {
           Link copied
         </p>
       )}
+
+      <article className="flex flex-col md:flex-row max-w-6xl lg:mx-auto m-4 p-4 rounded-lg  shadow-lg bg-white lg:space-x-5">
+        <section className="  w-full   mb-2">
+          <h2 className="text-2xl font-bold mb-3 text-[#162331]">
+            {listing?.propertyName} &mdash; $
+            {listing?.offer
+              ? listing?.discountPrice
+                  ?.toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              : listing?.price
+                  ?.toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            {listing?.type === "rent" && "/ month"}
+          </h2>
+          <p className="flex items-center mt-6 mb-3 font-semibold">
+            <FaMapMarkerAlt className="text-[#c69963] mr-1" />
+            {listing?.address}
+          </p>
+          <div className="flex justify-start items-center space-x-4 w-[75%]">
+            <p className="bg-red-800 w-full max-w-[200px] text-white p-1 rounded-md text-center font-semibold shadow-md ">
+              {listing?.type === "rent" ? "Rent" : "Sale"}
+            </p>
+            {listing?.offer && (
+              <p className="bg-green-800 w-full max-w-[200px] text-white p-1 rounded-md text-center font-semibold shadow-md">
+                ${listing?.price - listing?.discountPrice}
+              </p>
+            )}
+          </div>
+          <p className="mt-3 mb-3">
+            <span className="font-semibold">Description &mdash; </span>
+            <span>{listing?.description}</span>
+          </p>
+          <ul className="flex space-x-2 items-center lg:space-x-10 text-sm font-semibold">
+            <li className="font-bold text-xs flex items-center whitespace-nowrap">
+              <FaBed className="text-lg mr-1 text-[#c69963]" />
+              {listing?.beds > 1 ? `${listing?.beds} Beds ` : "1 bed"}
+            </li>
+            <li className="font-bold text-xs flex items-center whitespace-nowrap">
+              <FaBath className="text-lg mr-1 text-[#c69963]" />
+              {listing?.bathrooms > 1
+                ? `${listing?.bathrooms} Baths `
+                : "1 Bath"}
+            </li>
+            <li className="font-bold text-xs flex items-center whitespace-nowrap">
+              <FaParking className="text-lg mr-1 text-[#c69963]" />
+              {listing?.parks === "yes" ? `Parking Spot` : "No Parking"}
+            </li>
+            <li className="font-bold text-xs flex items-center whitespace-nowrap">
+              <FaChair className="text-lg mr-1 text-[#c69963]" />
+              {listing?.furnished === "yes" ? `Furnished ` : "Not Furnished"}
+            </li>
+          </ul>
+          {listing.userRef === auth.currentUser?.uid && (
+            <div className="mt-6">
+              {!contactOwner && (
+                <button
+                  className="px-7 py-3 bg-[#101d2c] text-white font-medium text-sm uppercase rounded shadow-md hover:bg-[#162331] hover:shadow-lg mt-3 transition-all duration-150 ease-in-out w-full text-center  "
+                  onClick={handleContactOwner}
+                >
+                  Contact Owner
+                </button>
+              )}
+              {contactOwner && (
+                <ContactOwner userRef={listing?.userRef} listing={listing} />
+              )}
+            </div>
+          )}
+        </section>
+        <div className="bg-blue-300  w-full  z-10 overflow-x-hidden"></div>
+      </article>
     </main>
   );
 };
