@@ -23,6 +23,7 @@ import {
 } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import { ContactOwner } from "components/ContactOwner";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 export const ListingDetail = () => {
   const [listing, setListing] = useState(null);
@@ -32,6 +33,7 @@ export const ListingDetail = () => {
   const { type, listingId } = useParams();
   const auth = getAuth();
   console.log(type, listingId);
+  const position = [listing?.geolocation?.lat, listing?.geolocation?.lng];
 
   SwiperCore.use([Autoplay, Navigation, Pagination]);
 
@@ -168,7 +170,24 @@ export const ListingDetail = () => {
             </div>
           )}
         </section>
-        <div className="bg-blue-300  w-full  z-10 overflow-x-hidden"></div>
+        <div className="w-full h-[200px] md:h-[400px]  z-10 overflow-x-hidden">
+          <MapContainer
+            center={position}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={position}>
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </div>
       </article>
     </main>
   );
