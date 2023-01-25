@@ -182,9 +182,7 @@ export const ListingDetail = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <Marker position={position}>
-              <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </Popup>
+              <Popup>{listing?.address}</Popup>
             </Marker>
           </MapContainer>
         </div>
