@@ -1,18 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { Slider } from "components/Slider";
 
 export const Home = () => {
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(true);
-    }, 5000);
-  }, []);
-
   return (
     <div>
-      {!loading && <h1>Loading</h1>}
-      {loading && <h1>Home</h1>}
+      <Slider />
     </div>
   );
 };
