@@ -28,7 +28,7 @@ export const Offers = () => {
           listingRef,
           where("offer", "==", "yes"),
           orderBy("timestamp", "desc"),
-          limit(2)
+          limit(4)
         );
 
         const querySnap = await getDocs(q);
@@ -61,7 +61,7 @@ export const Offers = () => {
         where("offer", "==", "yes"),
         orderBy("timestamp", "desc"),
         startAfter(lastFetchListing),
-        limit(2)
+        limit(4)
       );
 
       const querySnap = await getDocs(q);

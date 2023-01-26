@@ -26,13 +26,13 @@ export const CreateListing = () => {
   const formik = useFormik({
     initialValues: {
       type: "rent",
-      propertyName: "A Good apartment",
+      propertyName: "",
       beds: 1,
       bathrooms: 1,
       parks: "yes",
       furnished: "no",
-      address: "Enter an address",
-      description: "Describe this",
+      address: "",
+      description: "",
       offer: "yes",
       price: 1,
       discountPrice: 1,
