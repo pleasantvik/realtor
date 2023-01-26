@@ -14,6 +14,8 @@ import { Listing } from "pages/Listing";
 import { CreateListing } from "pages/CreateListing";
 import { EditListing } from "pages/EditListing";
 import { ListingDetail } from "pages/ListingDetail";
+import { Categories } from "pages/Categories";
+import { Footer } from "components/Footer";
 // import { Create } from "pages/createList";
 
 export const App = () => {
@@ -39,9 +41,11 @@ export const App = () => {
         <Route path="/login" element={<Signin />} />
         <Route path="/sign-up" element={<Signup />} />
         <Route path="/offers" element={<Offers />} />
+        <Route path="/category/:type" element={<Categories />} />
         <Route path="/category/:type/:listingId" element={<ListingDetail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
+      <Footer />
       <ToastContainer
         position="bottom-right"
         autoClose={5000}

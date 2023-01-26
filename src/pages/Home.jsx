@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ListingItem } from "components/ListingItem";
+import { Hero } from "components/Hero";
 
 export const Home = () => {
   const [offerListing, setOfferListing] = useState(null);
@@ -120,6 +121,7 @@ export const Home = () => {
   return (
     <div>
       <Slider />
+      <Hero />
       <div className="max-w-6xl mx-auto pt-4 space-y-6">
         {offerListing && offerListing.length > 0 && (
           <div className="m-2 mb-6">
