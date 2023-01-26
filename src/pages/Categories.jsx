@@ -91,7 +91,9 @@ export const Categories = () => {
       <h1 className="text-3xl text-center uppercase font-bold">
         {type === "rent" ? "Places for Rent" : "Places for sale"}
       </h1>
-      {!loading && listing.length === 0 && <p>No offer available</p>}
+      {!loading && listing.length === 0 && (
+        <p>{type === "rent" ? "No place for rent" : "No place for sale"}</p>
+      )}
       {!loading && listing && listing.length > 0 && (
         <div className="">
           <main>

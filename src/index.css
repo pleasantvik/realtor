@@ -21,3 +21,12 @@ html::-webkit-scrollbar {
 html {
   scrollbar-width: none;
 }
+
+.header {
+  background-image: linear-gradient(
+      rgba(16, 29, 44, 0.93),
+      rgba(16, 29, 44, 0.93)
+    ),
+    url(./resources/images/hero.jpeg);
+  margin-bottom: 3vh;
+}
